@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favoritos</title>
+</head>
+<body>
+    <h1>Meus Favoritos</h1>
+
+    <button id="showFavoritesBtn">Favoritos: 0</button>
+    <div id="favoritesContainer"></div>
+
+    <script>
+        // Pega os favoritos do localStorage ou cria array vazio
+        let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+
+        const btn = document.getElementById("showFavoritesBtn");
+        const container = document.getElementById("favoritesContainer");
+
+        // Atualiza o texto do botão
+        function atualizarBotao() {
+            btn.textContent = `Favoritos: ${favoritos.length}`;
+        }
+
+        // Mostra os favoritos
+        function mostrarFavoritos() {
+            container.innerHTML = ""; // limpa o container
+
+            if (favoritos.length === 0) {
+                container.innerHTML = "<p>Nenhum favorito ainda.</p>";
+                return;
+            }
+
+            favoritos.forEach(poke => {
+                const div = document.createElement("div");
+                div.innerHTML = `
+                    <h3>${poke.name}</h3>
+                    <img src="${poke.image}" alt="${poke.name}" width="100">
+                    <br>
+                    <button onclick="removerFavorito('${poke.id}')">❌ Remover</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Remove favorito pelo ID
+        function removerFavorito(id) {
+            favoritos = favoritos.filter(p => p.id !== id);
+            localStorage.setItem("favoritos", JSON.stringify(favoritos));
+            atualizarBotao();
+            mostrarFavoritos();
+        }
+
+        // Evento do botão
+        btn.addEventListener("click", mostrarFavoritos);
+
+        // Atualiza botão ao carregar
+        atualizarBotao();
+    </script>
+</body>
+</html>
